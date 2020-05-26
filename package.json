@@ -1,0 +1,39 @@
+{
+  "name": "@febef/gendynalarms",
+  "version": "0.0.0-beta",
+  "description": "CLI Dynatrace alarms generator",
+  "main": "src/index.js",
+  "bin": {
+    "@febef/gendynalarms": "bin/gendynalarms",
+    "create-project": "bin/gendynalarms"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "colors": "^1.4.0",
+    "esm": "^3.2.25"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/febef/genDynAlarms"
+  },
+  "keywords": [
+    "api",
+    "dynatrace",
+    "custom",
+    "alarms",
+    "metrics",
+    "etl",
+    "template"
+  ],
+  "author": "Facundo E. Beltramo <fexbef@gmail.com> (https://febef.github.io)",
+  "license": "GPL",
+  "bugs": {
+    "url": "https://github.com/febef/genDynAlarms/issues"
+  },
+  "homepage": "https://github.com/febef/genDynAlarms"
+}

@@ -1,0 +1,16 @@
+{
+  "version": "1.0.0",
+  "name": "picoro-core",
+  "globalValues":{
+    "path": "/module/picoro/metrics"
+  },
+  "definitions": [{
+    "type" : "metric",
+    "version": "1.0.0",
+    "path": "${ModuleName}"
+  },{
+    "type" : "etl",
+    "version": "1.0.0",
+    "prop1": "value1"
+  }]
+}
