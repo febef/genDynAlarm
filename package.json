@@ -1,6 +1,6 @@
 {
   "name": "@febef/gendynalarms",
-  "version": "0.0.0-beta",
+  "version": "0.0.1-beta",
   "description": "CLI Dynatrace alarms generator",
   "main": "src/index.js",
   "bin": {
@@ -15,7 +15,8 @@
   },
   "dependencies": {
     "colors": "^1.4.0",
-    "esm": "^3.2.25"
+    "esm": "^3.2.25",
+    "yamljs": "^0.3.0"
   },
   "repository": {
     "type": "git",

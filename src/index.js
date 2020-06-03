@@ -1,6 +1,7 @@
 
 import path from "path";
 import fs from "fs";
+import yamljs from 'yamljs';
 import {Logger} from "./logger";
 
 export class genDynalarms {
@@ -33,8 +34,9 @@ export class genDynalarms {
   CreateFromFile(file, workdir="") {
 
     try{
+      let filepath = path.join(workdir,"/",file);
       this.debug('Creando desde el archivo:', (workdir+"/").gray+file);
-      this.data = require(path.join(workdir,"/",file));
+      this.data = (file.slice(-3)=="json") ? require(filepath) : yamljs.load(filepath) ;
       this.data.filename = file;
       this.workdir = workdir;
     } catch(e) {
@@ -42,7 +44,7 @@ export class genDynalarms {
       return;
     }
 
-    this.CreateObjet(this.data);
+    this.CreateObject(this.data);
   }
 
   AddGlovalValues(data, recursive=false) {
@@ -62,7 +64,7 @@ export class genDynalarms {
     }
   }
 
-  CreateObjet(data) {
+  CreateObject(data) {
 
     this.info("Creando", data.name || data.filename);
     if (data.version === this.version) {
@@ -74,12 +76,13 @@ export class genDynalarms {
       if(data.includes){
         for (let i of data.includes){
           this.debug("Incluyendo", i);
-          this.CreateFromFile(i+".json", this.workdir);
+          this.CreateFromFile(i, this.workdir);
         }
       }
 
       if(data.definitions) {
         for (let d of data.definitions){
+          this.debug("Definition", d);
           if (d.type && d.version && this.definitions[d.type+"-"+d.version]) {
             let object = new this.definitions[d.type+"-"+ d.version].object(this);
             object.create(d);
@@ -97,8 +100,5 @@ export class genDynalarms {
       return 0;
     }
   }
-
-
-
 
 }

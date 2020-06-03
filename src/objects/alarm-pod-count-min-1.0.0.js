@@ -33,9 +33,9 @@ export class object extends baseObject {
     this.body = {
       "metadata": {
         "configurationVersions": [2],
-        "clusterVersion": "1.186.78.20200212-151447"
+        "clusterVersion": this.globalValues["Dynatrace.clusterVersion"]
       },
-      "id": "custom-alert-pod-"+def.name+"-min-q",
+      "id": "custom-alert-pod-" + def.name+"-min-q",
       "metricId": "builtin:tech.generic.count",
       "name": `Q < ${def.threshold} | ${def.name}-${this.globalValues["projectName"]}-${this.globalValues["env"]}`,
       "description": "La cantidad de pods esta por debajo del nivel normal.",
@@ -57,12 +57,12 @@ export class object extends baseObject {
         {
           "context": "CONTEXTLESS",
           "key": "K8-NameSpace",
-          "value": this.globalValues["projectName"] + this.globalValues[env]
+          "value": this.globalValues["projectName"] + this.globalValues["env"]
         },
         {
           "context": "CONTEXTLESS",
           "key": "K8 Base Pod Name",
-          "value": def.pod_basename
+          "value": def.name
         }
       ]
     };

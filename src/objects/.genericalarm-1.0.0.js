@@ -1,4 +1,4 @@
-import { baseObject } from "../object.class";
+import { baseObject } from "../object.request.class";
 
 export class object extends baseObject {
   version="1.0.0";
@@ -8,17 +8,21 @@ export class object extends baseObject {
 
     let { options, body } = this;
 
-    this.info("Enviando petición de creación de Metrica a la api.");
+    this.info("Enviando petición de creación de Alarma '"+body.id+"' a la api.");
     this.debug("Petición:\n Options: ", options, "\nBody: ",body); 
-
-    const response = await this.request({options, body});
-    
-    this.debug("Respuesta:", JSON.parse(response));
-
+    if (this.globalValues.notdorequest != true) {
+      const response = await this.request({options, body});
+      this.debug("Respuesta:", JSON.parse(response));
+    }
     this.info("Verificando creacíon.");
 
     options.method = "GET";
-    const verifyResponseText = await this.request({options, body: {}});
+    let verifyResponseText = {};
+    if (this.globalValues.notdorequest != true) {
+      verifyResponseText = await this.request({options, body: {}});
+    } else {
+       verifyResponseText = JSON.stringify(body);
+    }
     const verifyResponse = JSON.parse(verifyResponseText);
 
     this.debug("Respuesta:", verifyResponse);
@@ -31,7 +35,7 @@ export class object extends baseObject {
     if (passVerify) {
       this.info("Creado","[ok]".green);
     } else {
-      this.error("No se creo o actualizo la Metrica.");
+      this.error("No se creo o actualizo la Alarma.");
     }
 
   }
