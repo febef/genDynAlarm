@@ -1,4 +1,4 @@
-import { object as baseObject } from "./.genericalarm-1.0.0";
+import { object as baseObject } from "./generic-createAndVerify-1.0.0";
 
 export class object extends baseObject {
   version="1.0.0";
@@ -6,26 +6,29 @@ export class object extends baseObject {
 
   setUpValues(def){
     // Variables Auxiliares
-    let timeseriesId = [
-      "custom:"+ this.globalValues["program.name"],
+    let id = [
+      this.globalValues["program.name"],
+      this.globalValues["program.domain"],
       this.globalValues["env"],
-      def.name, def.tsidTail
-    ].join(".");
-    
-    const path = [
-      "/e/", this.globalValues["Dynatrace.env"], 
-      "/api/v1/timeseries/", timeseriesId
-    ].join('');
+      def.name,
+      "min-pod-q"
+   ].join(".");
+   
+   const path = [
+     "/e/", this.globalValues["Dynatrace.env"], 
+     "/api/config/v1/anomalyDetection/metricEvents/", id
+   ].join('');
 
-    // Opciones de la petición
-    this.options = {
-      hostname: this.globalValues["Dynatrace.host"],
-      port: 443,
-      path: path,
-      method: "PUT",
-      headers: {
-        "Authorization": "Api-Token " + this.globalValues["Dynatrace.token"],
-        "Content-Type": "application/json"
+   this.id = id;
+
+   // Opciones de la petición
+   this.options = {
+     hostname: this.globalValues["Dynatrace.host"],
+     port: 443, path,
+     method: "PUT",
+     headers: {
+       "Authorization": "Api-Token " + this.globalValues["Dynatrace.token"],
+       "Content-Type": "application/json"
       }
     };
     
@@ -35,10 +38,10 @@ export class object extends baseObject {
         "configurationVersions": [2],
         "clusterVersion": this.globalValues["Dynatrace.clusterVersion"]
       },
-      "id": "custom-alert-pod-" + def.name+"-min-q",
+      "id": id,
       "metricId": "builtin:tech.generic.count",
-      "name": `Q < ${def.threshold} | ${def.name}-${this.globalValues["projectName"]}-${this.globalValues["env"]}`,
-      "description": "La cantidad de pods esta por debajo del nivel normal.",
+      "name": `Q < ${def.threshold} | ${id}`,
+      "description": "La cantidad de pods es inferior a "+def.threshold+".",
       "aggregationType": "VALUE",
       "eventType": "ERROR",
       "severity": "ERROR",
@@ -57,15 +60,16 @@ export class object extends baseObject {
         {
           "context": "CONTEXTLESS",
           "key": "K8-NameSpace",
-          "value": this.globalValues["projectName"] + this.globalValues["env"]
+          "value": this.globalValues["projectName"]+ "-" + this.globalValues["env"]
         },
         {
           "context": "CONTEXTLESS",
           "key": "K8 Base Pod Name",
-          "value": def.name
+          "value": def.name + this.globalValues["endPodBaseName"]
         }
       ]
     };
+
   }
 
 }

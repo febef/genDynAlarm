@@ -1,4 +1,4 @@
-import { baseObject } from "../object.request.class";
+import { baseObject } from "./object.request.class";
 
 export class object extends baseObject {
   version="1.0.0";
@@ -8,7 +8,7 @@ export class object extends baseObject {
 
     let { options, body } = this;
 
-    this.info("Enviando petición de creación de Alarma '"+body.id+"' a la api.");
+    this.info("Enviando petición de creación de '"+this.id+"' a la api.");
     this.debug("Petición:\n Options: ", options, "\nBody: ",body); 
     if (this.globalValues.notdorequest != true) {
       const response = await this.request({options, body});

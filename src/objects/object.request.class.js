@@ -1,4 +1,4 @@
-import { Request } from "./synchttps"; 
+import { Request } from "../synchttps"; 
 
 export class baseObject {
   version="1.0.0";
@@ -30,7 +30,7 @@ export class baseObject {
     for (let p in d) {
       type = typeof d[p]
       switch(type) {
-        case "object": pd[p] = resolveDefinition(d[p]);  break;
+        case "object": pd[p] = this.resolveDefinition(d[p]);  break;
         case "string": pd[p] = this._remplaceVars(d[p]); break;
         default: pd[p] = d[p];
       }

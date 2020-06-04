@@ -1,4 +1,4 @@
-import { object as baseObject } from "./.genericalarm-1.0.0";
+import { object as baseObject } from "./generic-createAndVerify-1.0.0";
 
 export class object extends baseObject {
   version="1.0.0";
@@ -6,17 +6,18 @@ export class object extends baseObject {
 
   setUpValues(def){
     // Variables Auxiliares
-    let timeseriesId = [
-      "custom:"+ this.globalValues["program.name"],
+    let id = [
+      this.globalValues["program.name"],
       this.globalValues["env"],
-      def.name, def.tsidTail
+      def.name, "restarted_container_count"
     ].join(".");
     
     const path = [
       "/e/", this.globalValues["Dynatrace.env"], 
-      "/api/v1/timeseries/", timeseriesId
+      "/api/v1/timeseries/", id
     ].join('');
 
+    this.id = id;
     // Opciones de la petición
     this.options = {
       hostname: this.globalValues["Dynatrace.host"],
@@ -31,40 +32,31 @@ export class object extends baseObject {
     
     // cuerpo de la petición
     this.body = {
-      "metadata": {
-        "configurationVersions": [2],
-        "clusterVersion": this.globalValues["Dynatrace.clusterVersion"]
-      },
-      "id": "custom-alert-restarted-container-" + def.name,
-      "metricId": "builtin:tech.generic.count",
-      "name": `Q < ${def.threshold} | ${def.name}-${this.globalValues["projectName"]}-${this.globalValues["env"]}`,
-      "description": "Se detectaron reinicios en los contenedores.",
-      "aggregationType": "VALUE",
-      "eventType": "ERROR",
-      "severity": "ERROR",
       "threshold": def.threshold,
+      "alertCondition": "ABOVE",
       "samples": 3,
       "violatingSamples": 1,
       "dealertingSamples": 3,
-      "alertCondition": "ABOVE",
+      "eventType": "ERROR",
+      "eventName": "Restarted containers count",
+      "filter": "USER_INTERACTION",
       "enabled": true,
-      "tagFilters": [
-        {
+      "name": "API Geographicaddress",
+      "description": "El contador de contenedores reiniciados es mayor a" +def.threshold+".",
+      "timeseriesId": id,
+      "tagFilters": [{
           "context": "CONTEXTLESS",
-          "key": "tec_restartedcontainer",
+          "key": "tec_restartedpod",
           "value": null
-        },
-        {
+        },{
           "context": "CONTEXTLESS",
           "key": "K8-NameSpace",
-          "value": this.globalValues["projectName"] + this.globalValues["env"]
-        },
-        {
+          "value": this.globalValues["proyectName"]+ "-" + this.globalValues["env"]
+        },{
           "context": "CONTEXTLESS",
           "key": "K8 Base Pod Name",
-          "value": def.name
-        }
-      ]
+          "value": def.name + this.globalValues["endPodBaseName"]
+      }]
     };
   }
 
