@@ -5,13 +5,16 @@ export class baseObject {
   name="Object";
 
   constructor(m){
+    this.logger=m.logger;
+    this.reg = m.reg;
+    this.setReg = m.setReg;
     this.request = Request;
     this.globalValues = m.globalValues;
     this.debug= (...msg) => m.debug(("["+this.name+"]").gray, ...msg);
     this.info= (...msg) => m.info(("["+this.name+"]").gray, ...msg);
     this.warning= (...msg) => m.warning(("["+this.name+"]").gray, ...msg);
     this.error= (...msg) => m.error(("["+this.name+"]").gray, ...msg);
-    this.debug("Nueva instancia.");
+    this.debug("Nueva instancia .");
   }
 
   _remplaceVars(value){

@@ -8,24 +8,26 @@ export class object extends baseObject {
 
     let { options, body } = this;
 
-    this.info("Enviando petición de creación de '"+this.id+"' a la api.");
+    this.info("Enviando petición de creación de", this.id.brightBlue, "a la api.");
     this.debug("Petición:\n Options: ", options, "\nBody: ",body); 
     if (this.globalValues.notdorequest != true) {
       const response = await this.request({options, body});
-      this.debug("Respuesta:", JSON.parse(response));
+      this.debug("Respuesta:", this.id.gray, ((response != "")? JSON.parse(response) : {}) );
     }
-    this.info("Verificando creacíon.");
+    this.info("Verificando creacíon.", this.id.gray);
 
     options.method = "GET";
+    options.path = this.verifyPath;
+
     let verifyResponseText = {};
     if (this.globalValues.notdorequest != true) {
+    this.debug("Petición VERY:\n Options: ", options, "\nBody: ",body); 
       verifyResponseText = await this.request({options, body: {}});
+      this.debug("Respuesta:", this.id.gray, ((verifyResponseText != "")? JSON.parse(verifyResponseText) : {}) );
     } else {
        verifyResponseText = JSON.stringify(body);
     }
     const verifyResponse = JSON.parse(verifyResponseText);
-
-    this.debug("Respuesta:", verifyResponse);
 
     const passVerify = (
       (verifyResponse.threshold == body.threshold) && 
@@ -33,11 +35,11 @@ export class object extends baseObject {
     );
 
     if (passVerify) {
-      this.info("Creado","[ok]".green);
+      this.info("Creado.", "[ok]".green, this.id.brightBlue);
+      this.setReg("alarm["+this.id+"]" , verifyResponse);
     } else {
-      this.error("No se creo o actualizo la Alarma.");
+      this.error("No se creo o actualizo.", this.id.brightBlue );
     }
-
+    
   }
-
 }

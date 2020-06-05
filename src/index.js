@@ -8,6 +8,8 @@ export class genDynalarms {
 
   version="1.0.0";
   author="febef <febef@gmail.com>";
+  reg={};
+  mainFileName=false;
 
   definitions = {};
   globalValues = {};
@@ -21,6 +23,20 @@ export class genDynalarms {
     this.loadDefinitions();
   }
 
+  setReg(key, val) {
+    this.reg[key] = val;
+    this.debug("New Registry:", key);
+    if (this.reg.mainFileName && !this.globalValues.nolog) {
+      const logFileName = this.reg.mainFileName + ".log";
+
+      fs.appendFile(logFileName, `[${this.logger.timestamp()}] ${key}: ${JSON.stringify(val)}\n`, (err) => {
+        if (err) throw err;
+        this.debug("Write key to", logFileName);
+      });
+
+    }
+  }
+
   loadDefinitions() {
     fs
       .readdirSync(path.join(__dirname,"/objects/"))
@@ -31,7 +47,16 @@ export class genDynalarms {
       });
   }
 
-  CreateFromFile(file, workdir="") {
+  CreateFromFile(file, workdir=""){
+    let tm = this.logger.timestamp().replace(/[/,:, ]/g, ".");
+    this.reg = { mainFileName: file +"."+ tm};
+    if (this.reg.mainFileName && !this.globalValues.nolog) {
+      this.info("Se escribiran los registros en: ", (this.reg.mainFileName+".log").gray);
+    }
+    this._CreateFromFile(file, workdir);
+  }
+
+  _CreateFromFile(file, workdir="") {
 
     try{
       let filepath = path.join(workdir,"/",file);
@@ -45,6 +70,7 @@ export class genDynalarms {
     }
 
     this.CreateObject(this.data);
+    
   }
 
   AddGlovalValues(data, recursive=false) {
@@ -76,7 +102,7 @@ export class genDynalarms {
       if(data.includes){
         for (let i of data.includes){
           this.debug("Incluyendo", i);
-          this.CreateFromFile(i, this.workdir);
+          this._CreateFromFile(i, this.workdir);
         }
       }
 

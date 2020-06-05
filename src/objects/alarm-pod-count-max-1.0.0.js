@@ -14,21 +14,18 @@ export class object extends baseObject {
       "max-pod-q"
    ].join(".");
    
-   const path = [
-     "/e/", this.globalValues["Dynatrace.env"], 
-     "/api/config/v1/anomalyDetection/metricEvents/", id
-   ].join('');
-
+   this.verifyPath = `/e/${this.globalValues["Dynatrace.env"]}/api/config/v1/anomalyDetection/metricEvents/${id}`;
    this.id = id;
 
    // Opciones de la petición
-   this.options = {
-     hostname: this.globalValues["Dynatrace.host"],
-     port: 443, path,
-     method: "PUT",
-     headers: {
-       "Authorization": "Api-Token " + this.globalValues["Dynatrace.token"],
-       "Content-Type": "application/json"
+    this.options = {
+      hostname: this.globalValues["Dynatrace.host"],
+      path: `/e/${this.globalValues["Dynatrace.env"]}/api/config/v1/anomalyDetection/metricEvents/${id}`,
+      port: 443,
+      method: "PUT",
+      headers: {
+        "Authorization": "Api-Token " + this.globalValues["Dynatrace.token"],
+        "Content-Type": "application/json"
       }
     };
     

@@ -26,7 +26,7 @@ export class Logger {
   }
 
   timestamp(){
-    return new Date().toLocaleString();
+    return new Date().toLocaleString() + " " + process.hrtime()[1];
   }
   
   logLevel(){
