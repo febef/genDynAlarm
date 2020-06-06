@@ -31,7 +31,7 @@ export class object extends baseObject {
 
     const passVerify = (
       (verifyResponse.threshold == body.threshold) && 
-      (verifyResponse.name == body.name)
+      (verifyResponse.id == this.id)
     );
 
     if (passVerify) {

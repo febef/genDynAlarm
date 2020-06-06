@@ -8,21 +8,28 @@ export class object extends baseObject {
     // Variables Auxiliares
     let id = [
       this.globalValues["program.name"],
+      this.globalValues["program.domain"],
       this.globalValues["env"],
-      def.name, "restarted_container_count"
+      def.name,
+      def.identifier
     ].join(".");
     
     const path = [
       "/e/", this.globalValues["Dynatrace.env"], 
-      "/api/v1/timeseries/", id
+      "/api/v1/thresholds/", id
     ].join('');
 
     this.id = id;
+    this.verifyPath = path.replace(
+      "/api/v1/thresholds/",
+      "/api/config/v1/anomalyDetection/metricEvents/"
+    );
+
     // Opciones de la petición
     this.options = {
       hostname: this.globalValues["Dynatrace.host"],
       port: 443,
-      path: path,
+      path,
       method: "PUT",
       headers: {
         "Authorization": "Api-Token " + this.globalValues["Dynatrace.token"],
@@ -37,13 +44,13 @@ export class object extends baseObject {
       "samples": 3,
       "violatingSamples": 1,
       "dealertingSamples": 3,
-      "eventType": "ERROR",
-      "eventName": "Restarted containers count",
+      "eventType": "ERROR_EVENT",
+      "eventName": "Reinicio de contenedores",
       "filter": "USER_INTERACTION",
       "enabled": true,
-      "name": "API Geographicaddress",
+      "name": id,
       "description": "El contador de contenedores reiniciados es mayor a" +def.threshold+".",
-      "timeseriesId": id,
+      "timeseriesId": "custom:switch.dxp.uat.cust-bs-test.restarted_contaniers_count",//"custom:" + id,
       "tagFilters": [{
           "context": "CONTEXTLESS",
           "key": "tec_restartedpod",

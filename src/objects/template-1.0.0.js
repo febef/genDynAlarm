@@ -17,7 +17,33 @@ export class object {
     this.debug("Nueva instancia.");
   }
 
+  resolveDefinition(d) {
+    let pd={}, type;
+    for (let p in d) {
+      type = typeof d[p]
+      switch(type) {
+        case "object": pd[p] = this.resolveDefinition(d[p]);  break;
+        case "string": pd[p] = this._remplaceVars(d[p]); break;
+        default: pd[p] = d[p];
+      }
+    }
+    this.debug("Resolución de definicion: \noriginal: ", d, "\nresuelta:", pd);
+    return pd;
+  }
+
    _remplaceVars(value){
+    const regex = /\${[aA-zZ,_,.,0-9]*}/g;
+    const found = value.match(regex);
+    if(found) for (let v of found) {
+      let name = v.slice(2).slice(0,-1);
+      if(this.globalValues[name]) value = value.split(v).join(this.globalValues[name]);
+      if(this.def[name]) value = value.split(v).join(this.def[name]);
+      if(!this.globalValues[name] && !this.def[name]) this.warning("Variable global o local '" + name + "'  no definida.");
+    }
+    return value; 
+  }
+
+   _remplaceVarsTPL(value){
     const regex = /\${{[aA-zZ,_,.,0-9]*}}/g;
     const found = value.match(regex);
     if(found) for (let v of found) {
@@ -29,12 +55,18 @@ export class object {
     return value; 
   }
 
-  create(def){
+  create(definition){
+    if (definition.version !== this.version) return this.warning("La version de la definición no existe!");
+    let def = this.resolveDefinition(definition);
+    this._create(def);
+  }
+
+  _create(def){
     this.def = def;
     this.info("Creando", def.outFile.gray);
     this.debug("Leyendo template", def.template);
     let script = fs.readFileSync(def.template, { encoding:'utf8', flag:'r' }); 
-    script = this._remplaceVars(script);
+    script = this._remplaceVarsTPL(script);
     this.debug("Escribiendo template procesado", def.outFile);
     fs.writeFile(def.outFile, script, (err) => {
       if(err) return console.error(err);

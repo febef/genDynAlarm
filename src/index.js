@@ -97,6 +97,9 @@ export class genDynalarms {
       
       if (data.globalValues) {
         this.AddGlovalValues(data.globalValues);
+        if(this.globalValues["noTimestamps"] == true ){
+          this.logger.timestampEnabled = false
+        }
       }
 
       if(data.includes){
