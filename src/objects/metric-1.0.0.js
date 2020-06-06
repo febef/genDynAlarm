@@ -60,7 +60,7 @@ export class object extends baseObject {
       const response = await this.request({options, body});
       this.debug("Respuesta:", JSON.parse(response));
     }
-    this.info("Verificando creacíon.", this.id.gray);
+    this.info("Verificando creación.", this.id.gray);
 
     options.method = "GET";
     let verifyResponseText = {};

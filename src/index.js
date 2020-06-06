@@ -8,8 +8,8 @@ export class genDynalarms {
 
   version="1.0.0";
   author="febef <febef@gmail.com>";
-  reg={};
   mainFileName=false;
+  reg={};
 
   definitions = {};
   globalValues = {};
@@ -92,7 +92,7 @@ export class genDynalarms {
 
   CreateObject(data) {
 
-    this.info("Creando", data.name || data.filename);
+    this.info("Creando", (data.name || data.filename).bold);
     if (data.version === this.version) {
       
       if (data.globalValues) {
