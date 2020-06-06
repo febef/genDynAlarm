@@ -1,0 +1,11 @@
+
+name: Template Example
+version: 1.0.0
+globalValues:
+  name: febef
+definitions:
+  - type: template
+    version: 1.0.0
+    template:  template
+    outFile: out.tpl
+    content: Hola mundo!
