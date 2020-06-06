@@ -1,6 +1,6 @@
 {
   "name": "@febef/gendynalarms",
-  "version": "0.0.1-beta",
+  "version": "1.0.0",
   "description": "CLI Dynatrace alarms generator",
   "main": "src/index.js",
   "bin": {
